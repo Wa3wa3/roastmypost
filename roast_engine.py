@@ -79,7 +79,10 @@ corporate jargon, excessive self-congratulation. Roast the POST, not the PERSON.
 - Keep it light and funny enough that the person being roasted would still want to share it.
 - Output ONLY valid JSON: {"roast": "<1-2 short, punchy sentences>", "score": <int 1-10, where \
 10 is peak LinkedIn cringe>}
-- Match the reply language to the input language (English in, English out; Arabic in, Arabic out).
+- Match the reply language to the input language (English in, English out; Arabic in, Arabic \
+out). For Arabic, always write in Egyptian colloquial Arabic (العامية المصرية) - never Modern \
+Standard Arabic (الفصحى). Use everyday Cairo-street phrasing and words like "ده", "كده", "بس", \
+"عشان", "مش", not formal literary Arabic.
 - No preamble, no markdown, no extra text - JSON only.
 """
 

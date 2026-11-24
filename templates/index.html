@@ -27,10 +27,10 @@
   <main>
     <textarea id="post-input" maxlength="3000"
       data-ph-en="Paste the LinkedIn post here..."
-      data-ph-ar="الصق بوست اللينكدإن هنا..."
+      data-ph-ar="انسخ وحط البوست هنا..."
       placeholder="Paste the LinkedIn post here..."></textarea>
 
-    <button id="roast-btn" data-en="Roast Me 🔥" data-ar="روستني 🔥">Roast Me 🔥</button>
+    <button id="roast-btn" data-en="Roast Me 🔥" data-ar="روست البوست 🔥">Roast Me 🔥</button>
 
     <div id="result-card" class="card hidden">
       <div class="card-score" id="card-score">-/10</div>
@@ -47,7 +47,7 @@
 
     <p class="privacy-note"
       data-en="Nothing you paste is stored. Processed in memory and discarded immediately."
-      data-ar="مفيش حاجة بتتخزن. بتتعالج في الذاكرة بس وبتتمسح فورًا.">
+      data-ar="احنا مش بنخزن أي حاجة. كل حاجة بتتمسح على طول.">
       Nothing you paste is stored. Processed in memory and discarded immediately.
     </p>
   </main>
@@ -78,7 +78,7 @@ document.getElementById('roast-btn').addEventListener('click', async () => {
   const btn = document.getElementById('roast-btn');
   btn.disabled = true;
   const originalText = btn.textContent;
-  btn.textContent = currentLang === 'ar' ? 'بيفكر...' : 'Thinking...';
+  btn.textContent = currentLang === 'ar' ? 'أتقل, تاخد روست نضيق...' : 'Thinking...';
 
   try {
     const res = await fetch('/roast', {
