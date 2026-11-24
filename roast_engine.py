@@ -23,9 +23,48 @@ moment a real key is present in the environment / .env file.
 import os
 import random
 import re
+import threading
+import time
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
 GEMINI_MODEL = "gemini-3.5-flash"
+
+# Hard global cap on REAL Gemini calls per day, across all users combined.
+# Google's exact free-tier RPD for this specific model isn't clearly
+# published as of writing - rather than guess their number, this is a
+# deliberately conservative, self-imposed ceiling so the app can never
+# silently blow through free-tier quota (or run up a paid bill, if this
+# key is ever upgraded to a paid tier). Adjustable without a redeploy via
+# `fastapi cloud env set MAX_DAILY_GEMINI_CALLS <n> --app-id ...` - check
+# your actual tier/quota in AI Studio before raising this. Once the cap is
+# hit, every request for the rest of the day falls back to the mock roast
+# bank instead of calling the API at all (saves the wasted round-trip, not
+# just "stop trying").
+MAX_DAILY_GEMINI_CALLS = int(os.environ.get("MAX_DAILY_GEMINI_CALLS", "100"))
+
+_quota_lock = threading.Lock()
+_quota_state = {"day": None, "count": 0}
+
+
+def _day_key() -> str:
+    # Resets at midnight UTC. In-memory only (matches the rest of this
+    # app's no-persistence design) - resets early if the process restarts,
+    # which only makes the cap MORE conservative, never less.
+    return time.strftime("%Y-%m-%d", time.gmtime())
+
+
+def _quota_available() -> bool:
+    """Atomically checks and reserves one unit of today's quota.
+    Returns True if this call may proceed to the real API."""
+    with _quota_lock:
+        today = _day_key()
+        if _quota_state["day"] != today:
+            _quota_state["day"] = today
+            _quota_state["count"] = 0
+        if _quota_state["count"] >= MAX_DAILY_GEMINI_CALLS:
+            return False
+        _quota_state["count"] += 1
+        return True
 
 SYSTEM_PROMPT = """You are a witty comedy writer who roasts LinkedIn posts for a fun, \
 shareable app. Your roasts are SHARP but NEVER MEAN.
@@ -96,6 +135,11 @@ def generate_roast(text: str, lang: str = "auto") -> dict:
 
     if not GEMINI_API_KEY:
         return _mock_roast(resolved_lang)
+
+    if not _quota_available():
+        result = _mock_roast(resolved_lang)
+        result["quota_exhausted"] = True
+        return result
 
     try:
         from google import genai

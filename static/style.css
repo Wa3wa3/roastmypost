@@ -1,10 +1,20 @@
 * { box-sizing: border-box; }
 
+:root {
+  --linkedin-blue: #0a66c2;
+  --linkedin-blue-dark: #004182;
+  --ink: #1d2226;
+  --muted: #5e6a75;
+  --border: #e3e7eb;
+  --bg: #f4f6f8;
+  --accent: #e8491d;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif;
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-  color: #f1f5f9;
+  background: var(--bg);
+  color: var(--ink);
   min-height: 100vh;
 }
 
@@ -20,19 +30,22 @@ header {
 }
 
 h1 {
-  font-size: 2.2rem;
+  font-size: 2.1rem;
   margin: 0 0 6px;
+  color: var(--ink);
+  font-weight: 800;
 }
 
 .subtitle {
-  color: #94a3b8;
-  margin: 0 0 16px;
-  font-size: 0.95rem;
+  color: var(--muted);
+  margin: 0 0 18px;
+  font-size: 0.98rem;
 }
 
 .lang-toggle {
   display: inline-flex;
-  background: rgba(255,255,255,0.08);
+  background: #ffffff;
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 4px;
   gap: 4px;
@@ -41,17 +54,17 @@ h1 {
 .lang-btn {
   border: none;
   background: transparent;
-  color: #cbd5e1;
-  padding: 6px 16px;
+  color: var(--muted);
+  padding: 6px 18px;
   border-radius: 999px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.85rem;
 }
 
 .lang-btn.active {
-  background: #f97316;
-  color: #0f172a;
+  background: var(--linkedin-blue);
+  color: #ffffff;
 }
 
 main {
@@ -63,23 +76,30 @@ main {
 textarea {
   width: 100%;
   min-height: 140px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.06);
-  color: #f1f5f9;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: #ffffff;
+  color: var(--ink);
   padding: 16px;
   font-size: 1rem;
   resize: vertical;
   font-family: inherit;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+textarea::placeholder {
+  color: #9aa5b1;
 }
 
 textarea:focus {
-  outline: 2px solid #f97316;
+  outline: none;
+  border-color: var(--linkedin-blue);
+  box-shadow: 0 0 0 3px rgba(10,102,194,0.15);
 }
 
 button#roast-btn, button#download-btn {
   border: none;
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 14px 20px;
   font-size: 1.05rem;
   font-weight: 700;
@@ -87,8 +107,13 @@ button#roast-btn, button#download-btn {
 }
 
 button#roast-btn {
-  background: linear-gradient(135deg, #f97316, #ea580c);
-  color: #0f172a;
+  background: var(--linkedin-blue);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(10,102,194,0.3);
+}
+
+button#roast-btn:hover {
+  background: var(--linkedin-blue-dark);
 }
 
 button#roast-btn:disabled {
@@ -97,18 +122,24 @@ button#roast-btn:disabled {
 }
 
 button#download-btn {
-  background: rgba(255,255,255,0.1);
-  color: #f1f5f9;
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #ffffff;
+  color: var(--ink);
+  border: 1.5px solid var(--border);
+}
+
+button#download-btn:hover {
+  border-color: var(--linkedin-blue);
+  color: var(--linkedin-blue);
 }
 
 .card {
   background: #ffffff;
-  color: #0f172a;
-  border-radius: 20px;
-  padding: 28px 24px;
+  color: var(--ink);
+  border-radius: 18px;
+  padding: 30px 26px;
   text-align: center;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  box-shadow: 0 8px 30px rgba(10,30,60,0.1);
+  border: 1px solid var(--border);
 }
 
 .card.hidden, button.hidden {
@@ -116,35 +147,41 @@ button#download-btn {
 }
 
 .card-score {
-  font-size: 2.4rem;
+  font-size: 2.3rem;
   font-weight: 800;
-  color: #ea580c;
+  color: var(--accent);
   margin-bottom: 10px;
+  letter-spacing: -0.02em;
 }
 
 .card-roast {
   font-size: 1.15rem;
-  line-height: 1.5;
-  margin-bottom: 18px;
+  line-height: 1.55;
+  margin-bottom: 20px;
+  color: var(--ink);
 }
 
 .card-footer {
   font-size: 0.8rem;
-  color: #64748b;
-  border-top: 1px solid #e2e8f0;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
   padding-top: 12px;
 }
 
 .card-footer a {
-  color: #ea580c;
+  color: var(--linkedin-blue);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.card-footer a:hover {
+  text-decoration: underline;
 }
 
 .privacy-note {
   text-align: center;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--muted);
   margin-top: 6px;
 }
 
