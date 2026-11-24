@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoastMyPost - LinkedIn Post Roaster</title>
+<link rel="stylesheet" href="/static/style.css">
+<!-- SRI hash pinned to the exact 1.4.1 build fetched and verified at build time (see
+     _scratch/html2canvas.min.js) - protects against CDN compromise/tampering. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+  integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H"
+  crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🔥 RoastMyPost</h1>
+    <p class="subtitle" data-en="Paste a LinkedIn post. Get roasted. Share it." data-ar="الصق بوست لينكدإن. خد روست. شيّره.">
+      Paste a LinkedIn post. Get roasted. Share it.
+    </p>
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ar">AR</button>
+    </div>
+  </header>
+
+  <main>
+    <textarea id="post-input" maxlength="3000"
+      data-ph-en="Paste the LinkedIn post here..."
+      data-ph-ar="الصق بوست اللينكدإن هنا..."
+      placeholder="Paste the LinkedIn post here..."></textarea>
+
+    <button id="roast-btn" data-en="Roast Me 🔥" data-ar="روستني 🔥">Roast Me 🔥</button>
+
+    <div id="result-card" class="card hidden">
+      <div class="card-score" id="card-score">-/10</div>
+      <div class="card-roast" id="card-roast"></div>
+      <div class="card-footer">
+        <span data-en="Roasted by RoastMyPost" data-ar="روست من RoastMyPost">Roasted by RoastMyPost</span>
+        · <a href="https://linkedin.com/in/waad-ahmed" target="_blank" rel="noopener">built by Waad Ahmed</a>
+      </div>
+    </div>
+
+    <button id="download-btn" class="hidden" data-en="Download as Image" data-ar="تحميل كصورة">
+      Download as Image
+    </button>
+
+    <p class="privacy-note"
+      data-en="Nothing you paste is stored. Processed in memory and discarded immediately."
+      data-ar="مفيش حاجة بتتخزن. بتتعالج في الذاكرة بس وبتتمسح فورًا.">
+      Nothing you paste is stored. Processed in memory and discarded immediately.
+    </p>
+  </main>
+</div>
+
+<script>
+let currentLang = 'en';
+
+function applyLang(lang) {
+  currentLang = lang;
+  document.getElementById('html-root').setAttribute('lang', lang);
+  document.getElementById('html-root').setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.textContent = lang === 'ar' ? el.dataset.ar : el.dataset.en;
+  });
+  const input = document.getElementById('post-input');
+  input.placeholder = lang === 'ar' ? input.dataset.phAr : input.dataset.phEn;
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+});
+
+document.getElementById('roast-btn').addEventListener('click', async () => {
+  const text = document.getElementById('post-input').value.trim();
+  if (!text) return;
+  const btn = document.getElementById('roast-btn');
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = currentLang === 'ar' ? 'بيفكر...' : 'Thinking...';
+
+  try {
+    const res = await fetch('/roast', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({text, lang: currentLang})
+    });
+    const data = await res.json();
+    if (data.error) {
+      alert(data.error);
+    } else {
+      document.getElementById('card-roast').textContent = data.roast;
+      document.getElementById('card-score').textContent = `${data.score}/10`;
+      document.getElementById('result-card').classList.remove('hidden');
+      document.getElementById('download-btn').classList.remove('hidden');
+    }
+  } catch (e) {
+    alert('Something went wrong - try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+});
+
+document.getElementById('download-btn').addEventListener('click', () => {
+  html2canvas(document.getElementById('result-card'), {backgroundColor: '#ffffff', scale: 2})
+    .then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'roastmypost.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+});
+</script>
+</body>
+</html>
