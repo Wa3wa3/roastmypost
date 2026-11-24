@@ -78,7 +78,7 @@ document.getElementById('roast-btn').addEventListener('click', async () => {
   const btn = document.getElementById('roast-btn');
   btn.disabled = true;
   const originalText = btn.textContent;
-  btn.textContent = currentLang === 'ar' ? 'أتقل, تاخد روست نضيق...' : 'Thinking...';
+  btn.textContent = currentLang === 'ar' ? 'إتقل, تاخد روست نضيق...' : 'Thinking...';
 
   try {
     const res = await fetch('/roast', {
